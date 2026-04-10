@@ -68,17 +68,7 @@ class ParamType:
 
         .. versionadded:: 8.0
         """
-        # The class name without the "ParamType" suffix.
-        param_type = type(self).__name__.partition("ParamType")[0]
-        param_type = param_type.partition("ParameterType")[0]
-
-        # Custom subclasses might not remember to set a name.
-        if hasattr(self, "name"):
-            name = self.name
-        else:
-            name = param_type
-
-        return {"param_type": param_type, "name": name}
+        pass
 
     def __call__(
         self,
@@ -174,9 +164,7 @@ class FuncParamType(ParamType):
         self.func = func
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict()
-        info_dict["func"] = self.func
-        return info_dict
+        pass
 
     def convert(
         self, value: t.Any, param: Parameter | None, ctx: Context | None
@@ -262,10 +250,7 @@ class Choice(ParamType, t.Generic[ParamTypeValue]):
         self.case_sensitive = case_sensitive
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict()
-        info_dict["choices"] = self.choices
-        info_dict["case_sensitive"] = self.case_sensitive
-        return info_dict
+        pass
 
     def _normalized_mapping(
         self, ctx: Context | None = None
@@ -429,9 +414,7 @@ class DateTime(ParamType):
         ]
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict()
-        info_dict["formats"] = self.formats
-        return info_dict
+        pass
 
     def get_metavar(self, param: Parameter, ctx: Context) -> str | None:
         return f"[{'|'.join(self.formats)}]"
@@ -503,15 +486,7 @@ class _NumberRangeBase(_NumberParamTypeBase):
         self.clamp = clamp
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict()
-        info_dict.update(
-            min=self.min,
-            max=self.max,
-            min_open=self.min_open,
-            max_open=self.max_open,
-            clamp=self.clamp,
-        )
-        return info_dict
+        pass
 
     def convert(
         self, value: t.Any, param: Parameter | None, ctx: Context | None
@@ -799,9 +774,7 @@ class File(ParamType):
         self.atomic = atomic
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict()
-        info_dict.update(mode=self.mode, encoding=self.encoding)
-        return info_dict
+        pass
 
     def resolve_lazy_flag(self, value: str | os.PathLike[str]) -> bool:
         if self.lazy is not None:
@@ -941,16 +914,7 @@ class Path(ParamType):
             self.name = _("path")
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict()
-        info_dict.update(
-            exists=self.exists,
-            file_okay=self.file_okay,
-            dir_okay=self.dir_okay,
-            writable=self.writable,
-            readable=self.readable,
-            allow_dash=self.allow_dash,
-        )
-        return info_dict
+        pass
 
     def coerce_path_result(
         self, value: str | os.PathLike[str]
@@ -1075,17 +1039,15 @@ class Tuple(CompositeParamType):
         self.types: cabc.Sequence[ParamType] = [convert_type(ty) for ty in types]
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict()
-        info_dict["types"] = [t.to_info_dict() for t in self.types]
-        return info_dict
+        pass
 
     @property
     def name(self) -> str:  # type: ignore
-        return f"<{' '.join(ty.name for ty in self.types)}>"
+        pass
 
     @property
     def arity(self) -> int:  # type: ignore
-        return len(self.types)
+        pass
 
     def convert(
         self, value: t.Any, param: Parameter | None, ctx: Context | None

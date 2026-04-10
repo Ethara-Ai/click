@@ -126,42 +126,15 @@ class _WindowsConsoleRawIOBase(io.RawIOBase):
 
 class _WindowsConsoleReader(_WindowsConsoleRawIOBase):
     def readable(self) -> t.Literal[True]:
-        return True
+        pass
 
     def readinto(self, b: Buffer) -> int:
-        bytes_to_be_read = len(b)
-        if not bytes_to_be_read:
-            return 0
-        elif bytes_to_be_read % 2:
-            raise ValueError(
-                "cannot read odd number of bytes from UTF-16-LE encoded console"
-            )
-
-        buffer = get_buffer(b, writable=True)
-        code_units_to_be_read = bytes_to_be_read // 2
-        code_units_read = c_ulong()
-
-        rv = ReadConsoleW(
-            HANDLE(self.handle),
-            buffer,
-            code_units_to_be_read,
-            byref(code_units_read),
-            None,
-        )
-        if GetLastError() == ERROR_OPERATION_ABORTED:
-            # wait for KeyboardInterrupt
-            time.sleep(0.1)
-        if not rv:
-            raise OSError(f"Windows error: {GetLastError()}")
-
-        if buffer[0] == EOF:
-            return 0
-        return 2 * code_units_read.value
+        pass
 
 
 class _WindowsConsoleWriter(_WindowsConsoleRawIOBase):
     def writable(self) -> t.Literal[True]:
-        return True
+        pass
 
     @staticmethod
     def _get_error_message(errno: int) -> str:
@@ -198,7 +171,7 @@ class ConsoleStream:
 
     @property
     def name(self) -> str:
-        return self.buffer.name
+        pass
 
     def write(self, x: t.AnyStr) -> int:
         if isinstance(x, str):
@@ -210,8 +183,7 @@ class ConsoleStream:
         return self.buffer.write(x)
 
     def writelines(self, lines: cabc.Iterable[t.AnyStr]) -> None:
-        for line in lines:
-            self.write(line)
+        pass
 
     def __getattr__(self, name: str) -> t.Any:
         return getattr(self._text_stream, name)
@@ -224,33 +196,15 @@ class ConsoleStream:
 
 
 def _get_text_stdin(buffer_stream: t.BinaryIO) -> t.TextIO:
-    text_stream = _NonClosingTextIOWrapper(
-        io.BufferedReader(_WindowsConsoleReader(STDIN_HANDLE)),
-        "utf-16-le",
-        "strict",
-        line_buffering=True,
-    )
-    return t.cast(t.TextIO, ConsoleStream(text_stream, buffer_stream))
+    pass
 
 
 def _get_text_stdout(buffer_stream: t.BinaryIO) -> t.TextIO:
-    text_stream = _NonClosingTextIOWrapper(
-        io.BufferedWriter(_WindowsConsoleWriter(STDOUT_HANDLE)),
-        "utf-16-le",
-        "strict",
-        line_buffering=True,
-    )
-    return t.cast(t.TextIO, ConsoleStream(text_stream, buffer_stream))
+    pass
 
 
 def _get_text_stderr(buffer_stream: t.BinaryIO) -> t.TextIO:
-    text_stream = _NonClosingTextIOWrapper(
-        io.BufferedWriter(_WindowsConsoleWriter(STDERR_HANDLE)),
-        "utf-16-le",
-        "strict",
-        line_buffering=True,
-    )
-    return t.cast(t.TextIO, ConsoleStream(text_stream, buffer_stream))
+    pass
 
 
 _stream_factories: cabc.Mapping[int, t.Callable[[t.BinaryIO], t.TextIO]] = {

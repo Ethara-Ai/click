@@ -4,9 +4,7 @@ import click
 
 
 def validate_count(ctx, param, value):
-    if value < 0 or value % 2 != 0:
-        raise click.BadParameter("Should be a positive, even integer.")
-    return value
+    pass
 
 
 class URL(click.ParamType):
@@ -38,11 +36,4 @@ def cli(count, foo, url):
     through callbacks, through a custom type as well as by validating
     manually in the function.
     """
-    if foo is not None and foo != "wat":
-        raise click.BadParameter(
-            'If a value is provided it needs to be the value "wat".',
-            param_hint=["--foo"],
-        )
-    click.echo(f"count: {count}")
-    click.echo(f"foo: {foo}")
-    click.echo(f"url: {url!r}")
+    pass

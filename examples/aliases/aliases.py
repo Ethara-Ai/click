@@ -12,23 +12,13 @@ class Config:
         self.aliases = {}
 
     def add_alias(self, alias, cmd):
-        self.aliases.update({alias: cmd})
+        pass
 
     def read_config(self, filename):
-        parser = configparser.RawConfigParser()
-        parser.read([filename])
-        try:
-            self.aliases.update(parser.items("aliases"))
-        except configparser.NoSectionError:
-            pass
+        pass
 
     def write_config(self, filename):
-        parser = configparser.RawConfigParser()
-        parser.add_section("aliases")
-        for key, value in self.aliases.items():
-            parser.set("aliases", key, value)
-        with open(filename, "wb") as file:
-            parser.write(file)
+        pass
 
 
 pass_config = click.make_pass_decorator(Config, ensure=True)
@@ -79,11 +69,7 @@ def read_config(ctx, param, value):
     even if the group itself never executes so our aliases stay always
     available.
     """
-    cfg = ctx.ensure_object(Config)
-    if value is None:
-        value = os.path.join(os.path.dirname(__file__), "aliases.ini")
-    cfg.read_config(value)
-    return value
+    pass
 
 
 @click.command(cls=AliasedGroup)
@@ -101,32 +87,32 @@ def cli():
 @cli.command()
 def push():
     """Pushes changes."""
-    click.echo("Push")
+    pass
 
 
 @cli.command()
 def pull():
     """Pulls changes."""
-    click.echo("Pull")
+    pass
 
 
 @cli.command()
 def clone():
     """Clones a repository."""
-    click.echo("Clone")
+    pass
 
 
 @cli.command()
 def commit():
     """Commits pending changes."""
-    click.echo("Commit")
+    pass
 
 
 @cli.command()
 @pass_config
 def status(config):
     """Shows the status."""
-    click.echo(f"Status for {config.path}")
+    pass
 
 
 @cli.command()
@@ -138,6 +124,4 @@ def status(config):
 )
 def alias(config, alias_, cmd, config_file):
     """Adds an alias to the specified configuration file."""
-    config.add_alias(alias_, cmd)
-    config.write_config(config_file)
-    click.echo(f"Added '{alias_}' as alias for '{cmd}'")
+    pass

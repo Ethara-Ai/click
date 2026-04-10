@@ -160,7 +160,7 @@ class _Option:
 
     @property
     def takes_value(self) -> bool:
-        return self.action in ("store", "append")
+        pass
 
     def process(self, value: t.Any, state: _ParsingState) -> None:
         if self.action == "store":

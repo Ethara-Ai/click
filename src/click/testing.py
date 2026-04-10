@@ -41,13 +41,13 @@ class EchoingStdin:
         return self._echo(self._input.read(n))
 
     def read1(self, n: int = -1) -> bytes:
-        return self._echo(self._input.read1(n))  # type: ignore
+        pass
 
     def readline(self, n: int = -1) -> bytes:
-        return self._echo(self._input.readline(n))
+        pass
 
     def readlines(self) -> list[bytes]:
-        return [self._echo(x) for x in self._input.readlines()]
+        pass
 
     def __iter__(self) -> cabc.Iterator[bytes]:
         return iter(self._echo(x) for x in self._input)
@@ -118,11 +118,11 @@ class _NamedTextIOWrapper(io.TextIOWrapper):
 
     @property
     def name(self) -> str:
-        return self._name
+        pass
 
     @property
     def mode(self) -> str:
-        return self._mode
+        pass
 
 
 def make_input_stream(
@@ -196,16 +196,12 @@ class Result:
             No longer a proxy for ``self.stdout``. Now has its own independent stream
             that is mixing `<stdout>` and `<stderr>`, in the order they were written.
         """
-        return self.output_bytes.decode(self.runner.charset, "replace").replace(
-            "\r\n", "\n"
-        )
+        pass
 
     @property
     def stdout(self) -> str:
         """The standard output as unicode string."""
-        return self.stdout_bytes.decode(self.runner.charset, "replace").replace(
-            "\r\n", "\n"
-        )
+        pass
 
     @property
     def stderr(self) -> str:
@@ -214,9 +210,7 @@ class Result:
         .. versionchanged:: 8.2
             No longer raise an exception, always returns the `<stderr>` string.
         """
-        return self.stderr_bytes.decode(self.runner.charset, "replace").replace(
-            "\r\n", "\n"
-        )
+        pass
 
     def __repr__(self) -> str:
         exc_str = repr(self.exception) if self.exception else "okay"
@@ -348,33 +342,15 @@ class CliRunner:
 
         @_pause_echo(echo_input)  # type: ignore
         def visible_input(prompt: str | None = None) -> str:
-            sys.stdout.write(prompt or "")
-            try:
-                val = next(text_input).rstrip("\r\n")
-            except StopIteration as e:
-                raise EOFError() from e
-            sys.stdout.write(f"{val}\n")
-            sys.stdout.flush()
-            return val
+            pass
 
         @_pause_echo(echo_input)  # type: ignore
         def hidden_input(prompt: str | None = None) -> str:
-            sys.stdout.write(f"{prompt or ''}\n")
-            sys.stdout.flush()
-            try:
-                return next(text_input).rstrip("\r\n")
-            except StopIteration as e:
-                raise EOFError() from e
+            pass
 
         @_pause_echo(echo_input)  # type: ignore
         def _getchar(echo: bool) -> str:
-            char = sys.stdin.read(1)
-
-            if echo:
-                sys.stdout.write(char)
-
-            sys.stdout.flush()
-            return char
+            pass
 
         default_color = color
 
@@ -556,19 +532,4 @@ class CliRunner:
         .. versionchanged:: 8.0
             Added the ``temp_dir`` parameter.
         """
-        cwd = os.getcwd()
-        dt = tempfile.mkdtemp(dir=temp_dir)
-        os.chdir(dt)
-
-        try:
-            yield dt
-        finally:
-            os.chdir(cwd)
-
-            if temp_dir is None:
-                import shutil
-
-                try:
-                    shutil.rmtree(dt)
-                except OSError:
-                    pass
+        pass

@@ -27,48 +27,25 @@ def process_commands(processors):
     we can chain them together to feed one into the other, similar to how
     a pipe on unix works.
     """
-    # Start with an empty iterable.
-    stream = ()
-
-    # Pipe it through all stream processors.
-    for processor in processors:
-        stream = processor(stream)
-
-    # Evaluate the stream and throw away the items.
-    for _ in stream:
-        pass
+    pass
 
 
 def processor(f):
     """Helper decorator to rewrite a function so that it returns another
     function from it.
     """
-
-    def new_func(*args, **kwargs):
-        def processor(stream):
-            return f(stream, *args, **kwargs)
-
-        return processor
-
-    return update_wrapper(new_func, f)
+    pass
 
 
 def generator(f):
     """Similar to the :func:`processor` but passes through old values
     unchanged and does not pass through the values as parameter.
     """
-
-    @processor
-    def new_func(stream, *args, **kwargs):
-        yield from stream
-        yield from f(*args, **kwargs)
-
-    return update_wrapper(new_func, f)
+    pass
 
 
 def copy_filename(new, old):
-    new.filename = old.filename
-    return new
+    pass
 
 
 @cli.command("open")
@@ -85,17 +62,7 @@ def open_cmd(images):
     """Loads one or multiple images for processing.  The input parameter
     can be specified multiple times to load more than one image.
     """
-    for image in images:
-        try:
-            click.echo(f"Opening '{image}'")
-            if image == "-":
-                img = Image.open(click.get_binary_stdin())
-                img.filename = "-"
-            else:
-                img = Image.open(image)
-            yield img
-        except Exception as e:
-            click.echo(f"Could not open image '{image}': {e}", err=True)
+    pass
 
 
 @cli.command("save")
@@ -109,23 +76,14 @@ def open_cmd(images):
 @processor
 def save_cmd(images, filename):
     """Saves all processed images to a series of files."""
-    for idx, image in enumerate(images):
-        try:
-            fn = filename.format(idx + 1)
-            click.echo(f"Saving '{image.filename}' as '{fn}'")
-            yield image.save(fn)
-        except Exception as e:
-            click.echo(f"Could not save image '{image.filename}': {e}", err=True)
+    pass
 
 
 @cli.command("display")
 @processor
 def display_cmd(images):
     """Opens all images in an image viewer."""
-    for image in images:
-        click.echo(f"Displaying '{image.filename}'")
-        image.show()
-        yield image
+    pass
 
 
 @cli.command("resize")
@@ -136,11 +94,7 @@ def resize_cmd(images, width, height):
     """Resizes an image by fitting it into the box without changing
     the aspect ratio.
     """
-    for image in images:
-        w, h = (width or image.size[0], height or image.size[1])
-        click.echo(f"Resizing '{image.filename}' to {w}x{h}")
-        image.thumbnail((w, h))
-        yield image
+    pass
 
 
 @cli.command("crop")
@@ -150,40 +104,15 @@ def resize_cmd(images, width, height):
 @processor
 def crop_cmd(images, border):
     """Crops an image from all edges."""
-    for image in images:
-        box = [0, 0, image.size[0], image.size[1]]
-
-        if border is not None:
-            for idx, val in enumerate(box):
-                box[idx] = max(0, val - border)
-            click.echo(f"Cropping '{image.filename}' by {border}px")
-            yield copy_filename(image.crop(box), image)
-        else:
-            yield image
+    pass
 
 
 def convert_rotation(ctx, param, value):
-    if value is None:
-        return
-    value = value.lower()
-    if value in ("90", "r", "right"):
-        return (Image.ROTATE_90, 90)
-    if value in ("180", "-180"):
-        return (Image.ROTATE_180, 180)
-    if value in ("-90", "270", "l", "left"):
-        return (Image.ROTATE_270, 270)
-    raise click.BadParameter(f"invalid rotation '{value}'")
+    pass
 
 
 def convert_flip(ctx, param, value):
-    if value is None:
-        return
-    value = value.lower()
-    if value in ("lr", "leftright"):
-        return (Image.FLIP_LEFT_RIGHT, "left to right")
-    if value in ("tb", "topbottom", "upsidedown", "ud"):
-        return (Image.FLIP_LEFT_RIGHT, "top to bottom")
-    raise click.BadParameter(f"invalid flip '{value}'")
+    pass
 
 
 @cli.command("transpose")
@@ -194,16 +123,7 @@ def convert_flip(ctx, param, value):
 @processor
 def transpose_cmd(images, rotate, flip):
     """Transposes an image by either rotating or flipping it."""
-    for image in images:
-        if rotate is not None:
-            mode, degrees = rotate
-            click.echo(f"Rotate '{image.filename}' by {degrees}deg")
-            image = copy_filename(image.transpose(mode), image)
-        if flip is not None:
-            mode, direction = flip
-            click.echo(f"Flip '{image.filename}' {direction}")
-            image = copy_filename(image.transpose(mode), image)
-        yield image
+    pass
 
 
 @cli.command("blur")
@@ -211,10 +131,7 @@ def transpose_cmd(images, rotate, flip):
 @processor
 def blur_cmd(images, radius):
     """Applies gaussian blur."""
-    blur = ImageFilter.GaussianBlur(radius)
-    for image in images:
-        click.echo(f"Blurring '{image.filename}' by {radius}px")
-        yield copy_filename(image.filter(blur), image)
+    pass
 
 
 @cli.command("smoothen")
@@ -228,23 +145,14 @@ def blur_cmd(images, radius):
 @processor
 def smoothen_cmd(images, iterations):
     """Applies a smoothening filter."""
-    for image in images:
-        click.echo(
-            f"Smoothening {image.filename!r} {iterations}"
-            f" time{'s' if iterations != 1 else ''}"
-        )
-        for _ in range(iterations):
-            image = copy_filename(image.filter(ImageFilter.BLUR), image)
-        yield image
+    pass
 
 
 @cli.command("emboss")
 @processor
 def emboss_cmd(images):
     """Embosses an image."""
-    for image in images:
-        click.echo(f"Embossing '{image.filename}'")
-        yield copy_filename(image.filter(ImageFilter.EMBOSS), image)
+    pass
 
 
 @cli.command("sharpen")
@@ -254,10 +162,7 @@ def emboss_cmd(images):
 @processor
 def sharpen_cmd(images, factor):
     """Sharpens an image."""
-    for image in images:
-        click.echo(f"Sharpen '{image.filename}' by {factor}")
-        enhancer = ImageEnhance.Sharpness(image)
-        yield copy_filename(enhancer.enhance(max(1.0, factor)), image)
+    pass
 
 
 @cli.command("paste")
@@ -268,21 +173,4 @@ def paste_cmd(images, left, right):
     """Pastes the second image on the first image and leaves the rest
     unchanged.
     """
-    imageiter = iter(images)
-    image = next(imageiter, None)
-    to_paste = next(imageiter, None)
-
-    if to_paste is None:
-        if image is not None:
-            yield image
-        return
-
-    click.echo(f"Paste '{to_paste.filename}' on '{image.filename}'")
-    mask = None
-    if to_paste.mode == "RGBA" or "transparency" in to_paste.info:
-        mask = to_paste
-    image.paste(to_paste, (left, right), mask)
-    image.filename += f"+{to_paste.filename}"
-    yield image
-
-    yield from imageiter
+    pass

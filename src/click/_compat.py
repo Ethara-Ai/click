@@ -103,49 +103,16 @@ class _FixupStream:
         return getattr(self._stream, name)
 
     def read1(self, size: int) -> bytes:
-        f = getattr(self._stream, "read1", None)
-
-        if f is not None:
-            return t.cast(bytes, f(size))
-
-        return self._stream.read(size)
+        pass
 
     def readable(self) -> bool:
-        if self._force_readable:
-            return True
-        x = getattr(self._stream, "readable", None)
-        if x is not None:
-            return t.cast(bool, x())
-        try:
-            self._stream.read(0)
-        except Exception:
-            return False
-        return True
+        pass
 
     def writable(self) -> bool:
-        if self._force_writable:
-            return True
-        x = getattr(self._stream, "writable", None)
-        if x is not None:
-            return t.cast(bool, x())
-        try:
-            self._stream.write(b"")
-        except Exception:
-            try:
-                self._stream.write(b"")
-            except Exception:
-                return False
-        return True
+        pass
 
     def seekable(self) -> bool:
-        x = getattr(self._stream, "seekable", None)
-        if x is not None:
-            return t.cast(bool, x())
-        try:
-            self._stream.seek(self._stream.tell())
-        except Exception:
-            return False
-        return True
+        pass
 
 
 def _is_binary_reader(stream: t.IO[t.Any], default: bool = False) -> bool:
@@ -328,10 +295,7 @@ def get_binary_stdout() -> t.BinaryIO:
 
 
 def get_binary_stderr() -> t.BinaryIO:
-    writer = _find_binary_writer(sys.stderr)
-    if writer is None:
-        raise RuntimeError("Was not able to determine binary stream for sys.stderr.")
-    return writer
+    pass
 
 
 def get_text_stdin(encoding: str | None = None, errors: str | None = None) -> t.TextIO:
@@ -458,7 +422,7 @@ class _AtomicFile:
 
     @property
     def name(self) -> str:
-        return self._real_filename
+        pass
 
     def close(self, delete: bool = False) -> None:
         if self.closed:
@@ -539,11 +503,7 @@ if sys.platform.startswith("win") and WIN:
         _write = rv.write
 
         def _safe_write(s: str) -> int:
-            try:
-                return _write(s)
-            except BaseException:
-                ansi_wrapper.reset_all()
-                raise
+            pass
 
         rv.write = _safe_write  # type: ignore[method-assign]
 

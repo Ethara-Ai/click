@@ -21,10 +21,4 @@ def cli(input, output):
     Write stdin into the file foo.txt
         inout - foo.txt
     """
-    for f in input:
-        while True:
-            chunk = f.read(1024)
-            if not chunk:
-                break
-            output.write(chunk)
-            output.flush()
+    pass

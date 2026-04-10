@@ -52,9 +52,7 @@ _ansi_reset_all = "\033[0m"
 
 
 def hidden_prompt_func(prompt: str) -> str:
-    import getpass
-
-    return getpass.getpass(prompt)
+    pass
 
 
 def _build_prompt(
@@ -273,21 +271,7 @@ def echo_via_pager(
     :param color: controls if the pager supports ANSI colors or not.  The
                   default is autodetection.
     """
-    color = resolve_color_default(color)
-
-    if inspect.isgeneratorfunction(text_or_generator):
-        i = t.cast("t.Callable[[], cabc.Iterable[str]]", text_or_generator)()
-    elif isinstance(text_or_generator, str):
-        i = [text_or_generator]
-    else:
-        i = iter(t.cast("cabc.Iterable[str]", text_or_generator))
-
-    # convert every element of i to a text type if necessary
-    text_generator = (el if isinstance(el, str) else str(el) for el in i)
-
-    from ._termui_impl import pager
-
-    return pager(itertools.chain(text_generator, "\n"), color)
+    pass
 
 
 @t.overload
@@ -467,27 +451,7 @@ def progressbar(
 
     .. versionadded:: 2.0
     """
-    from ._termui_impl import ProgressBar
-
-    color = resolve_color_default(color)
-    return ProgressBar(
-        iterable=iterable,
-        length=length,
-        hidden=hidden,
-        show_eta=show_eta,
-        show_percent=show_percent,
-        show_pos=show_pos,
-        item_show_func=item_show_func,
-        fill_char=fill_char,
-        empty_char=empty_char,
-        bar_template=bar_template,
-        info_sep=info_sep,
-        file=file,
-        label=label,
-        width=width,
-        color=color,
-        update_min_steps=update_min_steps,
-    )
+    pass
 
 
 def clear() -> None:
@@ -497,11 +461,7 @@ def clear() -> None:
 
     .. versionadded:: 2.0
     """
-    if not isatty(sys.stdout):
-        return
-
-    # ANSI escape \033[2J clears the screen, \033[1;1H moves the cursor
-    echo("\033[2J\033[1;1H", nl=False)
+    pass
 
 
 def _interpret_color(color: int | tuple[int, int, int] | str, offset: int = 0) -> str:
@@ -653,7 +613,7 @@ def unstyle(text: str) -> str:
 
     :param text: the text to remove style information from.
     """
-    return strip_ansi(text)
+    pass
 
 
 def secho(
@@ -765,18 +725,7 @@ def edit(
         if the ``editor`` supports editing multiple files at once.
 
     """
-    from ._termui_impl import Editor
-
-    ed = Editor(editor=editor, env=env, require_save=require_save, extension=extension)
-
-    if filename is None:
-        return ed.edit(text)
-
-    if isinstance(filename, str):
-        filename = (filename,)
-
-    ed.edit_files(filenames=filename)
-    return None
+    pass
 
 
 def launch(url: str, wait: bool = False, locate: bool = False) -> int:
@@ -803,9 +752,7 @@ def launch(url: str, wait: bool = False, locate: bool = False) -> int:
                    might have weird effects if the URL does not point to
                    the filesystem.
     """
-    from ._termui_impl import open_url
-
-    return open_url(url, wait=wait, locate=locate)
+    pass
 
 
 # If this is provided, getchar() calls into this instead.  This is used
@@ -833,20 +780,11 @@ def getchar(echo: bool = False) -> str:
     :param echo: if set to `True`, the character read will also show up on
                  the terminal.  The default is to not show it.
     """
-    global _getchar
-
-    if _getchar is None:
-        from ._termui_impl import getchar as f
-
-        _getchar = f
-
-    return _getchar(echo)
+    pass
 
 
 def raw_terminal() -> AbstractContextManager[int]:
-    from ._termui_impl import raw_terminal as f
-
-    return f()
+    pass
 
 
 def pause(info: str | None = None, err: bool = False) -> None:
@@ -865,19 +803,4 @@ def pause(info: str | None = None, err: bool = False) -> None:
     :param err: if set to message goes to ``stderr`` instead of
                 ``stdout``, the same as with echo.
     """
-    if not isatty(sys.stdin) or not isatty(sys.stdout):
-        return
-
-    if info is None:
-        info = _("Press any key to continue...")
-
-    try:
-        if info:
-            echo(info, nl=False, err=err)
-        try:
-            getchar()
-        except (KeyboardInterrupt, EOFError):
-            pass
-    finally:
-        if info:
-            echo(err=err)
+    pass

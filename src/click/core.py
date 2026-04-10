@@ -130,12 +130,7 @@ def iter_params_for_processing(
     """
 
     def sort_key(item: Parameter) -> tuple[bool, float]:
-        try:
-            idx: float = invocation_order.index(item)
-        except ValueError:
-            idx = float("inf")
-
-        return not item.is_eager, idx
+        pass
 
     return sorted(declaration_order, key=sort_key)
 
@@ -442,15 +437,7 @@ class Context:
 
     @property
     def protected_args(self) -> list[str]:
-        import warnings
-
-        warnings.warn(
-            "'protected_args' is deprecated and will be removed in Click 9.0."
-            " 'args' will contain remaining unparsed tokens.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._protected_args
+        pass
 
     def to_info_dict(self) -> dict[str, t.Any]:
         """Gather information that could be useful for a tool generating
@@ -464,14 +451,7 @@ class Context:
 
         .. versionadded:: 8.0
         """
-        return {
-            "command": self.command.to_info_dict(self),
-            "info_name": self.info_name,
-            "allow_extra_args": self.allow_extra_args,
-            "allow_interspersed_args": self.allow_interspersed_args,
-            "ignore_unknown_options": self.ignore_unknown_options,
-            "auto_envvar_prefix": self.auto_envvar_prefix,
-        }
+        pass
 
     def __enter__(self) -> Context:
         self._depth += 1
@@ -556,7 +536,7 @@ class Context:
 
         .. versionadded:: 5.0
         """
-        return self._meta
+        pass
 
     def make_formatter(self) -> HelpFormatter:
         """Creates the :class:`~click.HelpFormatter` for the help and
@@ -599,7 +579,7 @@ class Context:
 
         .. versionadded:: 8.0
         """
-        return self._exit_stack.enter_context(context_manager)
+        pass
 
     def call_on_close(self, f: t.Callable[..., t.Any]) -> t.Callable[..., t.Any]:
         """Register a function to be called when the context tears down.
@@ -644,18 +624,7 @@ class Context:
         information on the help page.  It's automatically created by
         combining the info names of the chain of contexts to the root.
         """
-        rv = ""
-        if self.info_name is not None:
-            rv = self.info_name
-        if self.parent is not None:
-            parent_command_path = [self.parent.command_path]
-
-            if isinstance(self.parent.command, Command):
-                for param in self.parent.command.get_params(self):
-                    parent_command_path.extend(param.get_usage_pieces(self))
-
-            rv = f"{' '.join(parent_command_path)} {rv}"
-        return rv.lstrip()
+        pass
 
     def find_root(self) -> Context:
         """Finds the outermost context."""
@@ -832,15 +801,7 @@ class Context:
             All ``kwargs`` are tracked in :attr:`params` so they will be
             passed if ``forward`` is called at multiple levels.
         """
-        # Can only forward to other commands, not direct callbacks.
-        if not isinstance(cmd, Command):
-            raise TypeError("Callback is not a command.")
-
-        for param in self.params:
-            if param not in kwargs:
-                kwargs[param] = self.params[param]
-
-        return self.invoke(cmd, *args, **kwargs)
+        pass
 
     def set_parameter_source(self, name: str, source: ParameterSource) -> None:
         """Set the source of a parameter. This indicates the location
@@ -977,15 +938,7 @@ class Command:
         self.deprecated = deprecated
 
     def to_info_dict(self, ctx: Context) -> dict[str, t.Any]:
-        return {
-            "name": self.name,
-            "params": [param.to_info_dict() for param in self.get_params(ctx)],
-            "help": self.help,
-            "epilog": self.epilog,
-            "short_help": self.short_help,
-            "hidden": self.hidden,
-            "deprecated": self.deprecated,
-        }
+        pass
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} {self.name}>"
@@ -1602,22 +1555,7 @@ class Group(Command):
                     )
 
     def to_info_dict(self, ctx: Context) -> dict[str, t.Any]:
-        info_dict = super().to_info_dict(ctx)
-        commands = {}
-
-        for name in self.list_commands(ctx):
-            command = self.get_command(ctx, name)
-
-            if command is None:
-                continue
-
-            sub_ctx = ctx._make_sub_context(command)
-
-            with sub_ctx.scope(cleanup=False):
-                commands[name] = command.to_info_dict(sub_ctx)
-
-        info_dict.update(commands=commands, chain=self.chain)
-        return info_dict
+        pass
 
     def add_command(self, cmd: Command, name: str | None = None) -> None:
         """Registers another :class:`Command` with this group.  If the name
@@ -1767,8 +1705,7 @@ class Group(Command):
                 return f
 
             def function(value: t.Any, /, *args: t.Any, **kwargs: t.Any) -> t.Any:
-                inner = old_callback(value, *args, **kwargs)
-                return f(inner, *args, **kwargs)
+                pass
 
             self._result_callback = rv = update_wrapper(t.cast(F, function), f)
             return rv  # type: ignore[return-value]
@@ -1986,7 +1923,7 @@ class CommandCollection(Group):
 
     def add_source(self, group: Group) -> None:
         """Add a group as a source of commands."""
-        self.sources.append(group)
+        pass
 
     def get_command(self, ctx: Context, cmd_name: str) -> Command | None:
         rv = super().get_command(ctx, cmd_name)
@@ -2200,21 +2137,7 @@ class Parameter:
 
         .. versionadded:: 8.0
         """
-        return {
-            "name": self.name,
-            "param_type_name": self.param_type_name,
-            "opts": self.opts,
-            "secondary_opts": self.secondary_opts,
-            "type": self.type.to_info_dict(),
-            "required": self.required,
-            "nargs": self.nargs,
-            "multiple": self.multiple,
-            # We explicitly hide the :attr:`UNSET` value to the user, as we choose to
-            # make it an implementation detail. And because ``to_info_dict`` has been
-            # designed for documentation purposes, we return ``None`` instead.
-            "default": self.default if self.default is not UNSET else None,
-            "envvar": self.envvar,
-        }
+        pass
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} {self.name}>"
@@ -2229,7 +2152,7 @@ class Parameter:
         """Returns the human readable name of this parameter.  This is the
         same as the name for options, but the metavar for arguments.
         """
-        return self.name  # type: ignore
+        pass
 
     def make_metavar(self, ctx: Context) -> str:
         if self.metavar is not None:
@@ -2874,19 +2797,7 @@ class Option(Parameter):
         .. versionchanged:: 8.3.0
             Returns ``None`` for the :attr:`flag_value` if it was not set.
         """
-        info_dict = super().to_info_dict()
-        info_dict.update(
-            help=self.help,
-            prompt=self.prompt,
-            is_flag=self.is_flag,
-            # We explicitly hide the :attr:`UNSET` value to the user, as we choose to
-            # make it an implementation detail. And because ``to_info_dict`` has been
-            # designed for documentation purposes, we return ``None`` instead.
-            flag_value=self.flag_value if self.flag_value is not UNSET else None,
-            count=self.count,
-            hidden=self.hidden,
-        )
-        return info_dict
+        pass
 
     def get_default(
         self, ctx: Context, call: bool = True
@@ -2913,57 +2824,7 @@ class Option(Parameter):
     def _parse_decls(
         self, decls: cabc.Sequence[str], expose_value: bool
     ) -> tuple[str | None, list[str], list[str]]:
-        opts = []
-        secondary_opts = []
-        name = None
-        possible_names = []
-
-        for decl in decls:
-            if decl.isidentifier():
-                if name is not None:
-                    raise TypeError(f"Name '{name}' defined twice")
-                name = decl
-            else:
-                split_char = ";" if decl[:1] == "/" else "/"
-                if split_char in decl:
-                    first, second = decl.split(split_char, 1)
-                    first = first.rstrip()
-                    if first:
-                        possible_names.append(_split_opt(first))
-                        opts.append(first)
-                    second = second.lstrip()
-                    if second:
-                        secondary_opts.append(second.lstrip())
-                    if first == second:
-                        raise ValueError(
-                            f"Boolean option {decl!r} cannot use the"
-                            " same flag for true/false."
-                        )
-                else:
-                    possible_names.append(_split_opt(decl))
-                    opts.append(decl)
-
-        if name is None and possible_names:
-            possible_names.sort(key=lambda x: -len(x[0]))  # group long options first
-            name = possible_names[0][1].replace("-", "_").lower()
-            if not name.isidentifier():
-                name = None
-
-        if name is None:
-            if not expose_value:
-                return None, opts, secondary_opts
-            raise TypeError(
-                f"Could not determine name for option with declarations {decls!r}"
-            )
-
-        if not opts and not secondary_opts:
-            raise TypeError(
-                f"No options defined but a name was passed ({name})."
-                " Did you mean to declare an argument instead? Did"
-                f" you mean to pass '--{name}'?"
-            )
-
-        return name, opts, secondary_opts
+        pass
 
     def add_to_parser(self, parser: _OptionParser, ctx: Context) -> None:
         if self.multiple:
@@ -3368,9 +3229,7 @@ class Argument(Parameter):
 
     @property
     def human_readable_name(self) -> str:
-        if self.metavar is not None:
-            return self.metavar
-        return self.name.upper()  # type: ignore
+        pass
 
     def make_metavar(self, ctx: Context) -> str:
         if self.metavar is not None:
@@ -3389,19 +3248,7 @@ class Argument(Parameter):
     def _parse_decls(
         self, decls: cabc.Sequence[str], expose_value: bool
     ) -> tuple[str | None, list[str], list[str]]:
-        if not decls:
-            if not expose_value:
-                return None, [], []
-            raise TypeError("Argument is marked as exposed, but does not have a name.")
-        if len(decls) == 1:
-            name = arg = decls[0]
-            name = name.replace("-", "_").lower()
-        else:
-            raise TypeError(
-                "Arguments take exactly one parameter declaration, got"
-                f" {len(decls)}: {decls}."
-            )
-        return name, [arg], []
+        pass
 
     def get_usage_pieces(self, ctx: Context) -> list[str]:
         return [self.make_metavar(ctx)]

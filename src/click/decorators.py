@@ -29,11 +29,7 @@ def pass_context(f: t.Callable[te.Concatenate[Context, P], R]) -> t.Callable[P, 
     """Marks a callback as wanting to receive the current context
     object as first argument.
     """
-
-    def new_func(*args: P.args, **kwargs: P.kwargs) -> R:
-        return f(get_current_context(), *args, **kwargs)
-
-    return update_wrapper(new_func, f)
+    pass
 
 
 def pass_obj(f: t.Callable[te.Concatenate[T, P], R]) -> t.Callable[P, R]:
@@ -41,11 +37,7 @@ def pass_obj(f: t.Callable[te.Concatenate[T, P], R]) -> t.Callable[P, R]:
     context onwards (:attr:`Context.obj`).  This is useful if that object
     represents the state of a nested system.
     """
-
-    def new_func(*args: P.args, **kwargs: P.kwargs) -> R:
-        return f(get_current_context().obj, *args, **kwargs)
-
-    return update_wrapper(new_func, f)
+    pass
 
 
 def make_pass_decorator(
@@ -75,22 +67,7 @@ def make_pass_decorator(
 
     def decorator(f: t.Callable[te.Concatenate[T, P], R]) -> t.Callable[P, R]:
         def new_func(*args: P.args, **kwargs: P.kwargs) -> R:
-            ctx = get_current_context()
-
-            obj: T | None
-            if ensure:
-                obj = ctx.ensure_object(object_type)
-            else:
-                obj = ctx.find_object(object_type)
-
-            if obj is None:
-                raise RuntimeError(
-                    "Managed to invoke callback without a context"
-                    f" object of type {object_type.__name__!r}"
-                    " existing."
-                )
-
-            return ctx.invoke(f, obj, *args, **kwargs)
+            pass
 
         return update_wrapper(new_func, f)
 
@@ -114,9 +91,7 @@ def pass_meta_key(
 
     def decorator(f: t.Callable[te.Concatenate[T, P], R]) -> t.Callable[P, R]:
         def new_func(*args: P.args, **kwargs: P.kwargs) -> R:
-            ctx = get_current_context()
-            obj = ctx.meta[key]
-            return ctx.invoke(f, obj, *args, **kwargs)
+            pass
 
         return update_wrapper(new_func, f)
 
@@ -535,9 +510,7 @@ def help_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
 
     def show_help(ctx: Context, param: Parameter, value: bool) -> None:
         """Callback that print the help page on ``<stdout>`` and exits."""
-        if value and not ctx.resilient_parsing:
-            echo(ctx.get_help(), color=ctx.color)
-            ctx.exit()
+        pass
 
     if not param_decls:
         param_decls = ("--help",)

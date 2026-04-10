@@ -14,14 +14,11 @@ class Environment:
 
     def log(self, msg, *args):
         """Logs a message to stderr."""
-        if args:
-            msg %= args
-        click.echo(msg, file=sys.stderr)
+        pass
 
     def vlog(self, msg, *args):
         """Logs a message to stderr only if verbose is enabled."""
-        if self.verbose:
-            self.log(msg, *args)
+        pass
 
 
 pass_environment = click.make_pass_decorator(Environment, ensure=True)
@@ -55,6 +52,4 @@ class ComplexCLI(click.Group):
 @pass_environment
 def cli(ctx, verbose, home):
     """A complex command line interface."""
-    ctx.verbose = verbose
-    if home is not None:
-        ctx.home = home
+    pass

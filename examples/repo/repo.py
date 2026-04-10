@@ -12,9 +12,7 @@ class Repo:
         self.verbose = False
 
     def set_config(self, key, value):
-        self.config[key] = value
-        if self.verbose:
-            click.echo(f"  config[{key}] = {value}", file=sys.stderr)
+        pass
 
     def __repr__(self):
         return f"<Repo {self.home}>"
@@ -48,13 +46,7 @@ def cli(ctx, repo_home, config, verbose):
     This tool is supposed to look like a distributed version control
     system to show how something like this can be structured.
     """
-    # Create a repo object and remember it as as the context object.  From
-    # this point onwards other commands can refer to it by using the
-    # @pass_repo decorator.
-    ctx.obj = Repo(os.path.abspath(repo_home))
-    ctx.obj.verbose = verbose
-    for key, value in config:
-        ctx.obj.set_config(key, value)
+    pass
 
 
 @cli.command()
@@ -76,13 +68,7 @@ def clone(repo, src, dest, shallow, rev):
     is not provided this will automatically use the last path component
     of SRC and create that folder.
     """
-    if dest is None:
-        dest = posixpath.split(src)[-1] or "."
-    click.echo(f"Cloning repo {src} to {os.path.basename(dest)}")
-    repo.home = dest
-    if shallow:
-        click.echo("Making shallow checkout")
-    click.echo(f"Checking out revision {rev}")
+    pass
 
 
 @cli.command()
@@ -93,8 +79,7 @@ def delete(repo):
 
     This will throw away the current repository.
     """
-    click.echo(f"Destroying repo {repo.home}")
-    click.echo("Deleted!")
+    pass
 
 
 @cli.command()
@@ -107,10 +92,7 @@ def setuser(repo, username, email, password):
 
     This will override the current user config.
     """
-    repo.set_config("username", username)
-    repo.set_config("email", email)
-    repo.set_config("password", "*" * len(password))
-    click.echo("Changed credentials.")
+    pass
 
 
 @cli.command()
@@ -132,23 +114,7 @@ def commit(repo, files, message):
     If a list of files is omitted, all changes reported by "repo status"
     will be committed.
     """
-    if not message:
-        marker = "# Files to be committed:"
-        hint = ["", "", marker, "#"]
-        for file in files:
-            hint.append(f"#   U {file}")
-        message = click.edit("\n".join(hint))
-        if message is None:
-            click.echo("Aborted!")
-            return
-        msg = message.split(marker)[0].rstrip()
-        if not msg:
-            click.echo("Aborted! Empty commit message")
-            return
-    else:
-        msg = "\n".join(message)
-    click.echo(f"Files to be committed: {files}")
-    click.echo(f"Commit message:\n{msg}")
+    pass
 
 
 @cli.command(short_help="Copies files.")

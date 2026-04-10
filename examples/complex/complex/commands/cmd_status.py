@@ -7,5 +7,4 @@ import click
 @pass_environment
 def cli(ctx):
     """Shows file changes in the current working directory."""
-    ctx.log("Changed files: none")
-    ctx.vlog("bla bla bla, debug info")
+    pass

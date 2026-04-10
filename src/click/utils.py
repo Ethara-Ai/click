@@ -30,18 +30,14 @@ R = t.TypeVar("R")
 
 
 def _posixify(name: str) -> str:
-    return "-".join(name.split()).lower()
+    pass
 
 
 def safecall(func: t.Callable[P, R]) -> t.Callable[P, R | None]:
     """Wraps a function so that it swallows exceptions."""
 
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R | None:
-        try:
-            return func(*args, **kwargs)
-        except Exception:
-            pass
-        return None
+        pass
 
     return update_wrapper(wrapper, func)
 
@@ -153,18 +149,7 @@ class LazyFile:
         a :exc:`FileError`.  Not handling this error will produce an error
         that Click shows.
         """
-        if self._f is not None:
-            return self._f
-        try:
-            rv, self.should_close = open_stream(
-                self.name, self.mode, self.encoding, self.errors, atomic=self.atomic
-            )
-        except OSError as e:
-            from .exceptions import FileError
-
-            raise FileError(self.name, hint=e.strerror) from e
-        self._f = rv
-        return rv
+        pass
 
     def close(self) -> None:
         """Closes the underlying file, no matter what."""
@@ -328,10 +313,7 @@ def get_binary_stream(name: t.Literal["stdin", "stdout", "stderr"]) -> t.BinaryI
     :param name: the name of the stream to open.  Valid names are ``'stdin'``,
                  ``'stdout'`` and ``'stderr'``
     """
-    opener = binary_streams.get(name)
-    if opener is None:
-        raise TypeError(f"Unknown standard stream '{name}'")
-    return opener()
+    pass
 
 
 def get_text_stream(
@@ -349,10 +331,7 @@ def get_text_stream(
     :param encoding: overrides the detected default encoding.
     :param errors: overrides the default error mode.
     """
-    opener = text_streams.get(name)
-    if opener is None:
-        raise TypeError(f"Unknown standard stream '{name}'")
-    return opener(encoding, errors)
+    pass
 
 
 def open_file(
@@ -391,17 +370,7 @@ def open_file(
 
     .. versionadded:: 3.0
     """
-    if lazy:
-        return t.cast(
-            "t.IO[t.Any]", LazyFile(filename, mode, encoding, errors, atomic=atomic)
-        )
-
-    f, should_close = open_stream(filename, mode, encoding, errors, atomic=atomic)
-
-    if not should_close:
-        f = t.cast("t.IO[t.Any]", KeepOpenFile(f))
-
-    return f
+    pass
 
 
 def format_filename(
@@ -477,22 +446,7 @@ def get_app_dir(app_name: str, roaming: bool = True, force_posix: bool = False) 
                         dot instead of the XDG config home or darwin's
                         application support folder.
     """
-    if WIN:
-        key = "APPDATA" if roaming else "LOCALAPPDATA"
-        folder = os.environ.get(key)
-        if folder is None:
-            folder = os.path.expanduser("~")
-        return os.path.join(folder, app_name)
-    if force_posix:
-        return os.path.join(os.path.expanduser(f"~/.{_posixify(app_name)}"))
-    if sys.platform == "darwin":
-        return os.path.join(
-            os.path.expanduser("~/Library/Application Support"), app_name
-        )
-    return os.path.join(
-        os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config")),
-        _posixify(app_name),
-    )
+    pass
 
 
 class PacifyFlushWrapper:

@@ -43,7 +43,7 @@ def get_current_context(silent: bool = False) -> Context | None:
 
 def push_context(ctx: Context) -> None:
     """Pushes a new context to the current stack."""
-    _local.__dict__.setdefault("stack", []).append(ctx)
+    pass
 
 
 def pop_context() -> None:
